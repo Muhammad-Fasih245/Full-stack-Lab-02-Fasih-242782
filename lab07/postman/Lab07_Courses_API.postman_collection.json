@@ -1,0 +1,101 @@
+{
+  "info": {
+    "_postman_id": "cs301l-lab07-courses-api",
+    "name": "Lab 07 Tasks",
+    "description": "Runnable Task 3 API checks. The POST request creates CS-990 and the DELETE request removes it so each iteration can run again.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Courses API",
+      "item": [
+        {
+          "name": "1. GET all courses",
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/courses" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status code is 200', () => pm.response.to.have.status(200));", "pm.test('Returns a course list', () => pm.expect(pm.response.json()).to.be.an('array').that.is.not.empty);"] } }]
+        },
+        {
+          "name": "2. GET courses filtered by department",
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/courses?department=Data%20Science" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status code is 200', () => pm.response.to.have.status(200));", "pm.test('Every result is Data Science', () => pm.expect(pm.response.json().every(c => c.department === 'Data Science')).to.be.true);"] } }]
+        },
+        {
+          "name": "3. GET courses by search",
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/courses?search=machine" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status code is 200', () => pm.response.to.have.status(200));", "pm.test('Search finds Machine Learning', () => pm.expect(pm.response.json().some(c => c.title === 'Machine Learning')).to.be.true);"] } }]
+        },
+        {
+          "name": "4. GET courses sorted by credit hours",
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/courses?department=Data%20Science&sort=creditHours&order=desc" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status code is 200', () => pm.response.to.have.status(200));", "pm.test('Filter and descending sort work together', () => { const a = pm.response.json(); pm.expect(a.every(c => c.department === 'Data Science')).to.be.true; pm.expect(a[0].creditHours).to.be.at.least(a[a.length - 1].creditHours); });"] } }]
+        },
+        {
+          "name": "5. GET statistics",
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/courses/stats" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status code is 200', () => pm.response.to.have.status(200));", "pm.test('Statistics include totals and most-credit course', () => { const x = pm.response.json(); pm.expect(x.totalCourses).to.be.a('number'); pm.expect(x.totalCreditHours).to.be.a('number'); pm.expect(x.averageCreditHours).to.be.a('number'); pm.expect(x.mostCredits).to.have.property('code'); });"] } }]
+        },
+        {
+          "name": "6. GET one existing course",
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/courses/CS-410" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status code is 200', () => pm.response.to.have.status(200));", "pm.test('Course code matches', () => pm.expect(pm.response.json().code).to.eql('CS-410'));"] } }]
+        },
+        {
+          "name": "7. GET unknown course (expected 404)",
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/courses/CS-999" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status code is 404', () => pm.response.to.have.status(404));", "pm.test('404 includes an error message', () => pm.expect(pm.response.json()).to.have.property('error'));"] } }]
+        },
+        {
+          "name": "8. POST create course",
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"code\": \"CS-990\",\n  \"title\": \"Postman Runner Course\",\n  \"creditHours\": 2,\n  \"instructor\": \"Dr. Test Person\",\n  \"department\": \"Computer Science\"\n}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/courses" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status code is 201', () => pm.response.to.have.status(201));", "pm.test('Created course and Location header are correct', () => { const c = pm.response.json(); pm.expect(c.title).to.eql('Postman Runner Course'); pm.expect(pm.response.headers.get('Location')).to.eql('/api/courses/CS-990'); });", "pm.collectionVariables.set('createdCourseCode', pm.response.json().code);"] } }]
+        },
+        {
+          "name": "9. POST duplicate course (expected 409)",
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"code\":\"CS-990\",\"title\":\"Duplicate Course\",\"creditHours\":2,\"instructor\":\"Dr. Test Person\",\"department\":\"Computer Science\"}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/courses" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status code is 409', () => pm.response.to.have.status(409));", "pm.test('Duplicate error names the course', () => pm.expect(pm.response.json().error).to.include('CS-990'));"] } }]
+        },
+        {
+          "name": "10. POST invalid course (expected 400)",
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"code\":\"CS3\",\"title\":\"AI\",\"creditHours\":9}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/courses" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status code is 400', () => pm.response.to.have.status(400));", "pm.test('Validation returns multiple details', () => pm.expect(pm.response.json().details).to.be.an('array').with.length.at.least(3));"] } }]
+        },
+        {
+          "name": "11. POST malformed JSON (expected 400)",
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"code\": ", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/courses" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status code is 400', () => pm.response.to.have.status(400));", "pm.test('Malformed JSON has a clear error', () => pm.expect(pm.response.json().error).to.eql('Malformed JSON body'));"] } }]
+        },
+        {
+          "name": "12. GET created course using collection variable",
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/courses/{{createdCourseCode}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status code is 200', () => pm.response.to.have.status(200));", "pm.test('Created course code matches saved variable', () => pm.expect(pm.response.json().code).to.eql(pm.collectionVariables.get('createdCourseCode')));"] } }]
+        },
+        {
+          "name": "13. PUT replace created course",
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"code\": \"CS-990\",\n  \"title\": \"Postman Runner Course Updated\",\n  \"creditHours\": 3,\n  \"instructor\": \"Dr. Test Person\",\n  \"department\": \"Computer Science\"\n}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/courses/{{createdCourseCode}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status code is 200', () => pm.response.to.have.status(200));", "pm.test('PUT replaced the title', () => pm.expect(pm.response.json().title).to.eql('Postman Runner Course Updated'));"] } }]
+        },
+        {
+          "name": "14. PATCH invalid course (expected 400)",
+          "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"title\":\"\"}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/courses/{{createdCourseCode}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status code is 400', () => pm.response.to.have.status(400));", "pm.test('PATCH explains the title validation error', () => pm.expect(pm.response.json().details).to.include('title must be at least 3 characters'));"] } }]
+        },
+        {
+          "name": "15. PATCH update credit hours",
+          "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"creditHours\":4}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/courses/{{createdCourseCode}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status code is 200', () => pm.response.to.have.status(200));", "pm.test('PATCH changed credit hours', () => pm.expect(pm.response.json().creditHours).to.eql(4));"] } }]
+        },
+        {
+          "name": "16. DELETE created course",
+          "request": { "method": "DELETE", "header": [], "url": "{{baseUrl}}/api/courses/{{createdCourseCode}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status code is 204', () => pm.response.to.have.status(204));"] } }]
+        },
+        {
+          "name": "17. GET deleted course (expected 404)",
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/courses/{{createdCourseCode}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status code is 404', () => pm.response.to.have.status(404));", "pm.test('Deleted course is no longer found', () => pm.expect(pm.response.json().error).to.include('not found'));"] } }]
+        }
+      ]
+    }
+  ],
+  "variable": [{ "key": "baseUrl", "value": "http://localhost:3000", "type": "string" }]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "cs-301l-lab-07",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CS-301L Lab 07: Node.js fundamentals, REST APIs, and Postman testing",
+  "main": "task1.js",
+  "scripts": {
+    "task1": "node task1.js",
+    "task2": "node task2.js",
+    "start": "node courses-server.js",
+    "start:courses": "node courses-server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{baseUrl}}/api/courses/{{createdCourseCode}}"
+method: PATCH
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: '{"title":""}'
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status code is 400', () => pm.response.to.have.status(400));
+      pm.test('PATCH explains the title validation error', () => pm.expect(pm.response.json().details).to.include('title must be at least 3 characters'));
+    language: text/javascript
+order: 14000

@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{baseUrl}}/api/courses/CS-410"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status code is 200', () => pm.response.to.have.status(200));
+      pm.test('Course code matches', () => pm.expect(pm.response.json().code).to.eql('CS-410'));
+    language: text/javascript
+order: 6000

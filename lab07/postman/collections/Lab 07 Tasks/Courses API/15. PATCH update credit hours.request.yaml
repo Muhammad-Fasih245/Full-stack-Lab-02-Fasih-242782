@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{baseUrl}}/api/courses/{{createdCourseCode}}"
+method: PATCH
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: '{"creditHours":4}'
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status code is 200', () => pm.response.to.have.status(200));
+      pm.test('PATCH changed credit hours', () => pm.expect(pm.response.json().creditHours).to.eql(4));
+    language: text/javascript
+order: 15000

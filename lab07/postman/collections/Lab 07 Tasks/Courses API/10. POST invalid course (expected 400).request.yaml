@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{baseUrl}}/api/courses"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: '{"code":"CS3","title":"AI","creditHours":9}'
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status code is 400', () => pm.response.to.have.status(400));
+      pm.test('Validation returns multiple details', () => pm.expect(pm.response.json().details).to.be.an('array').with.length.at.least(3));
+    language: text/javascript
+order: 10000

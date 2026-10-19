@@ -1,0 +1,22 @@
+$kind: http-request
+url: "{{baseUrl}}/api/courses/{{createdCourseCode}}"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "code": "CS-990",
+      "title": "Postman Runner Course Updated",
+      "creditHours": 3,
+      "instructor": "Dr. Test Person",
+      "department": "Computer Science"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status code is 200', () => pm.response.to.have.status(200));
+      pm.test('PUT replaced the title', () => pm.expect(pm.response.json().title).to.eql('Postman Runner Course Updated'));
+    language: text/javascript
+order: 13000

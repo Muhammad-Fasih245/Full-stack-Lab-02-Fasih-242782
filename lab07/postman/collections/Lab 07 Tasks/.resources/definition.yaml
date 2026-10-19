@@ -1,0 +1,5 @@
+$kind: collection
+description: Runnable Task 3 API checks. The POST request creates CS-990 and the DELETE request removes it so each iteration can run again.
+variables:
+  baseUrl: http://localhost:3000
+  createdCourseCode: ""

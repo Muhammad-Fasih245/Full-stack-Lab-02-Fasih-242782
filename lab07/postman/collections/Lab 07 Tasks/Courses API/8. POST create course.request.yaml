@@ -1,0 +1,23 @@
+$kind: http-request
+url: "{{baseUrl}}/api/courses"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "code": "CS-990",
+      "title": "Postman Runner Course",
+      "creditHours": 2,
+      "instructor": "Dr. Test Person",
+      "department": "Computer Science"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status code is 201', () => pm.response.to.have.status(201));
+      pm.test('Created course and Location header are correct', () => { const c = pm.response.json(); pm.expect(c.title).to.eql('Postman Runner Course'); pm.expect(pm.response.headers.get('Location')).to.eql('/api/courses/CS-990'); });
+      pm.collectionVariables.set('createdCourseCode', pm.response.json().code);
+    language: text/javascript
+order: 8000

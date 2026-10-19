@@ -1,0 +1,10 @@
+STUDENT REPORT
+Generated: 2026-10-18 18:51
+==============================================
+Ayesha Noor | BSDS-014 | Data Science | 1.90 | Academic Warning
+Iqra Shah | BSDS-031 | Data Science | 2.95 | Good
+==============================================
+Total Students: 2
+Average CGPA: 2.42
+Highest CGPA: 2.95 (Iqra Shah)
+Academic Warning: 1

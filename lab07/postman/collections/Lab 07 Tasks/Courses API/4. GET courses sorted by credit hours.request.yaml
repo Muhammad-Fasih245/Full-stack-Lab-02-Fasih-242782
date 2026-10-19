@@ -1,0 +1,14 @@
+$kind: http-request
+url: "{{baseUrl}}/api/courses?department=Data%20Science&sort=creditHours&order=desc"
+method: GET
+queryParams:
+  department: Data%20Science
+  sort: creditHours
+  order: desc
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status code is 200', () => pm.response.to.have.status(200));
+      pm.test('Filter and descending sort work together', () => { const a = pm.response.json(); pm.expect(a.every(c => c.department === 'Data Science')).to.be.true; pm.expect(a[0].creditHours).to.be.at.least(a[a.length - 1].creditHours); });
+    language: text/javascript
+order: 4000

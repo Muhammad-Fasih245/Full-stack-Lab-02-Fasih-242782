@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{baseUrl}}/api/courses"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: '{"code":"CS-990","title":"Duplicate Course","creditHours":2,"instructor":"Dr. Test Person","department":"Computer Science"}'
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status code is 409', () => pm.response.to.have.status(409));
+      pm.test('Duplicate error names the course', () => pm.expect(pm.response.json().error).to.include('CS-990'));
+    language: text/javascript
+order: 9000

@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{baseUrl}}/api/courses/{{createdCourseCode}}"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status code is 200', () => pm.response.to.have.status(200));
+      pm.test('Created course code matches saved variable', () => pm.expect(pm.response.json().code).to.eql(pm.collectionVariables.get('createdCourseCode')));
+    language: text/javascript
+order: 12000

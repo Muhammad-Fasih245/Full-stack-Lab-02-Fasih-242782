@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{baseUrl}}/api/courses/stats"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status code is 200', () => pm.response.to.have.status(200));
+      pm.test('Statistics include totals and most-credit course', () => { const x = pm.response.json(); pm.expect(x.totalCourses).to.be.a('number'); pm.expect(x.totalCreditHours).to.be.a('number'); pm.expect(x.averageCreditHours).to.be.a('number'); pm.expect(x.mostCredits).to.have.property('code'); });
+    language: text/javascript
+order: 5000

@@ -1,0 +1,8 @@
+[
+  { "name": "M.Fasih", "rollNumber": "BSCS-001", "department": "Computer Science", "semester": 5, "cgpa": 3.45 },
+  { "name": "Sara Ahmed", "rollNumber": "BSSE-023", "department": "Software Engineering", "semester": 5, "cgpa": 3.80 },
+  { "name": "Ayesha Noor", "rollNumber": "BSDS-014", "department": "Data Science", "semester": 4, "cgpa": 1.90 },
+  { "name": "Hamza Rauf", "rollNumber": "BSCS-019", "department": "Computer Science", "semester": 6, "cgpa": 2.45 },
+  { "name": "Iqra Shah", "rollNumber": "BSDS-031", "department": "Data Science", "semester": 3, "cgpa": 2.95 },
+  { "name": "Usman Tariq", "rollNumber": "BSSE-042", "department": "Software Engineering", "semester": 4, "cgpa": 2.55 }
+]
